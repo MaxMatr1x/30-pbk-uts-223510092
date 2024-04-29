@@ -2,19 +2,19 @@
   <div class="container">
     <h1>JADWAL KEGIATAN</h1>
     <div class="input-container">
-      <input type="text" v-model="newActivity.name" placeholder="Tambahkan kegiatan baru mu" @keyup.enter="addActivity">
+      <input type="text" v-model="newActivity.name" placeholder="Tambahkan kegiatan baru mu" @keyup.enter="tambahkegiatan">
       <input type="date" v-model="newActivity.date" required>
-      <button @click="addActivity">Tambah</button>
+      <button @click="tambahkegiatan">Tambah</button>
     </div>
 
-    <div class="filter-buttons">
-      <button @click="showAll">Semua Kegiatan</button>
-      <button @click="showIncomplete">Kegiatan Belum Selesai</button>
-      <button @click="showCompleted">Kegiatan Selesai</button>
+    <div class="tombol-filter">
+      <button @click="semua">Semua Kegiatan</button>
+      <button @click="belumselesai">Kegiatan Belum Selesai</button>
+      <button @click="selesai">Kegiatan Selesai</button>
     </div>
     <br>
 
-    <table v-if="filteredActivities.length > 0" class="activity-table">
+    <table v-if="filterkegiatan.length > 0" class="activity-table">
       <thead>
         <tr>
           <th>No</th>
@@ -26,7 +26,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(activity, index) in filteredActivities" :key="index">
+        <tr v-for="(activity, index) in filterkegiatan" :key="index">
           <td>{{ index + 1 }}</td>
           <td :class="{ 'completed': activity.completed }">
             <template v-if="index !== editingIndex">{{ activity.name }}</template>
@@ -41,13 +41,13 @@
           <td :class="{ 'completed': activity.completed }">{{ activity.completed ? 'Selesai' : 'Belum Selesai' }}</td>
           <td>
             <template v-if="index !== editingIndex">
-              <button @click="editActivity(index)">Edit</button>
+              <button @click="editkegiatan(index)">Edit</button>
             </template>
             <template v-else>
-              <button @click="saveEditedActivity(index)">Simpan</button>
-              <button @click="cancelEdit">Batal</button>
+              <button @click="simpaneditan(index)">Simpan</button>
+              <button @click="bataledit">Batal</button>
             </template>
-            <button @click="cancelActivity(index)" class="cancel-button">Hapus</button>
+            <button @click="hapuskegiatan(index)" class="cancel-button">Hapus</button>
           </td>
         </tr>
       </tbody>
@@ -69,7 +69,7 @@ export default {
     };
   },
   computed: {
-    filteredActivities() {
+    filterkegiatan() {
       if (this.filter === 'incomplete') {
         return this.activities.filter(activity => !activity.completed);
       } else if (this.filter === 'completed') {
@@ -80,40 +80,40 @@ export default {
     }
   },
   methods: {
-    addActivity() {
+    tambahkegiatan() {
       if (this.newActivity.name.trim() !== '' && this.newActivity.date !== '') {
         this.activities.push({ id: Date.now(), name: this.newActivity.name, date: this.newActivity.date, completed: false });
         this.newActivity = { name: '', date: '' };
       }
     },
-    editActivity(index) {
+    editkegiatan(index) {
       this.editingIndex = index;
       this.editedActivity = this.activities[index].name;
     },
-    saveEditedActivity(index) {
+    simpaneditan(index) {
       if (this.editedActivity.trim() !== '') {
         this.activities[index].name = this.editedActivity;
       }
       this.editingIndex = null;
       this.editedActivity = '';
     },
-    cancelEdit() {
+    bataledit() {
       this.editingIndex = null;
       this.editedActivity = '';
     },
-    cancelActivity(index) {
+    hapuskegiatan(index) {
       this.activities.splice(index, 1);
       if (index === this.editingIndex) {
         this.cancelEdit();
       }
     },
-    showAll() {
+    semua() {
       this.filter = 'all';
     },
-    showIncomplete() {
+    belumselesai() {
       this.filter = 'incomplete';
     },
-    showCompleted() {
+    selesai() {
       this.filter = 'completed';
     },
     updateStatus(activity) {
@@ -215,17 +215,17 @@ button:hover {
 }
 
 
-.filter-buttons {
+.tombol-filter {
   margin-top: 20px;
 }
 
-.filter-buttons button {
+.tombol-filter button {
   margin-right: 10px;
-  background-color: #057dfe;
+  background-color: #ff5811cb;
   color: #fff;
 }
 
-.filter-buttons button:hover {
+.tombol-filter button:hover {
   background-color: #447ab4a1;
 }
 
